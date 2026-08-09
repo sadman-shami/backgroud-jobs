@@ -6,5 +6,5 @@ Python asyncio queue has been used to do background jobs. Implemented websocket 
 POST /task
 DELETE /task/{task_id}
 
-WS /task -> Realtime Data communication
+WS /task/ws -> Realtime Data communication
 ```
