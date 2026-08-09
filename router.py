@@ -10,6 +10,7 @@ from models import (
 from database import tasks
 from TaskManager import taskmanager
 from WebsocketManager import websocketmanager
+from loggerstream import logger
 
 router = APIRouter(prefix="/task")
 
@@ -22,6 +23,7 @@ async def create_task(task: TaskCreate):
   new_task = Task(id=uuid4(), expression=task.expression, status="PROCESSING", result=None, created_at=datetime.now(timezone.utc))
   tasks[new_task.id] = new_task
   await taskmanager.add(new_task)
+  await logger(f"Added Task - {new_task.id}")
   await websocketmanager.send_json({"payload": get_tasks(), "type": "get_todos"})
   return new_task
 
@@ -33,6 +35,7 @@ async def delete_task(task_id: UUID):
     raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail=f"Task of ID {task_id} is in background task")
   task = tasks[task_id]
   del tasks[task_id]
+  await logger(f"Deleted Task - {task.id}")
   await websocketmanager.send_json({"payload": get_tasks(), "type": "get_todos"})
   return task
 

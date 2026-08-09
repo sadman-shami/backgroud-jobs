@@ -5,6 +5,7 @@ from typing import List
 from models import Task as AppTask
 from database import tasks
 from WebsocketManager import websocketmanager
+from loggerstream import logger
 
 class TaskManager():
   def __init__(
@@ -18,7 +19,7 @@ class TaskManager():
 
   async def start(self):
     self._worker_tasks = [
-      create_task(self._worker())
+      create_task(self._worker(i))
       for i in range(self.worker)
     ]
 
@@ -37,12 +38,14 @@ class TaskManager():
     if task.status == "PROCESSING":
       await self._queue.put(task)
 
-  async def _worker(self):
+  async def _worker(self, worker_id: int):
     while True:
       task: AppTask = await self._queue.get()
       try:
+        await logger(f"Worker {worker_id} Started job for Task - {task.id}")
         await self._do_task(task)
       except Exception:
+        await logger(f"Worker {worker_id} Failed to do task for Task - {task.id}")
         task.result = None
         task.status = "FAILED"
         tasks[task.id] = task
@@ -50,13 +53,20 @@ class TaskManager():
         tasks_list = [tasks[task_id].model_dump_json() for task_id in tasks.keys()]
         await websocketmanager.send_json({"payload": tasks_list, "type": "get_todos"})
         self._queue.task_done()
+        await logger(f"Worker {worker_id} Finished task for Task - {task.id}")
 
   async def _do_task(self, task: AppTask):
-    await sleep(randint(5,10))
+    t1 = randint(5,10)
+    await logger(f"Sleeping for {t1} for Task - {task.id}")
+    await sleep(t1)
+    await logger(f"Expression is Evaluating for Task - {task.id}")
     result = eval(task.expression)
+    await logger(f"Evaluating Finished for Task - {task.id}")
     task.result = str(result)
     task.status = "DONE"
     tasks[task.id] = task
-    await sleep(randint(5,10))
+    t2 = randint(5,10)
+    await logger(f"Sleeping for {t2} for Task - {task.id}")
+    await sleep(t2)
 
 taskmanager = TaskManager()
