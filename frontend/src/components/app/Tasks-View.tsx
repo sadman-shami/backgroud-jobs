@@ -16,7 +16,7 @@ interface ITask {
   created_at: string;
 }
 
-export const beautifyTime = (datetime: string) =>
+const beautifyTime = (datetime: string) =>
   new Intl.DateTimeFormat("en-US", {
     dateStyle: "medium",
     timeStyle: "short",
@@ -74,18 +74,23 @@ const TasksView: React.FC = () => {
   const [doneTask, setDoneTask] = useState<ITask[]>([]);
 
   const listenTask = (e: MessageEvent) => {
-    const payload = (JSON.parse(e.data) as { type: string; payload: string[] })
-      .payload;
-    setDoneTask([]);
-    setProcessedTask([]);
-    const tasks: ITask[] = [];
-    payload.map((item) => {
-      tasks.push(JSON.parse(item) as ITask);
-    });
-    const pt = tasks.filter((task) => task.status === "PROCESSING");
-    const dt = tasks.filter((task) => task.status !== "PROCESSING");
-    setDoneTask(dt);
-    setProcessedTask(pt);
+    const wsresponse = JSON.parse(e.data) as {
+      type: string;
+      payload: string[];
+    };
+    if (wsresponse.type === "get_todos") {
+      const payload = wsresponse.payload;
+      setDoneTask([]);
+      setProcessedTask([]);
+      const tasks: ITask[] = [];
+      payload.map((item) => {
+        tasks.push(JSON.parse(item) as ITask);
+      });
+      const pt = tasks.filter((task) => task.status === "PROCESSING");
+      const dt = tasks.filter((task) => task.status !== "PROCESSING");
+      setDoneTask(dt);
+      setProcessedTask(pt);
+    }
   };
 
   useEffect(() => {

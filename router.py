@@ -45,3 +45,4 @@ async def websocket_endpoint(websocket: WebSocket):
       await websocket.receive_json()
   except WebSocketDisconnect:
     await websocketmanager.disconnect()
+
