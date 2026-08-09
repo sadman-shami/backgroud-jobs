@@ -14,5 +14,5 @@ class TaskCreate(TaskBase):
 class Task(TaskBase):
   id: UUID = Field(..., description="ID for the task")
   status: Optional[STATUS] = Field(default="PROCESSING", description="Status of task")
-  result: Optional[int | float] = Field(default=None, description="Result of the task")
+  result: Optional[str] = Field(default=None, description="Result of the task")
   created_at: datetime = Field(..., description="Time of task creation")

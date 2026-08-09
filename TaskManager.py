@@ -42,7 +42,7 @@ class TaskManager():
       task: AppTask = await self._queue.get()
       try:
         await self._do_task(task)
-      except ZeroDivisionError:
+      except Exception:
         task.result = None
         task.status = "FAILED"
         tasks[task.id] = task
@@ -52,11 +52,11 @@ class TaskManager():
         self._queue.task_done()
 
   async def _do_task(self, task: AppTask):
-    await sleep(randint(1,5))
-    result = eval(task.expression)
-    task.result = result
-    task.status = "DONE"
     await sleep(randint(5,10))
+    result = eval(task.expression)
+    task.result = str(result)
+    task.status = "DONE"
     tasks[task.id] = task
+    await sleep(randint(5,10))
 
 taskmanager = TaskManager()

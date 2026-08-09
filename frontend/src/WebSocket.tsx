@@ -8,7 +8,7 @@ const WebsocketContext = createContext<IWebsocketContext>({
   ws: null,
 });
 
-export const WebsocketProvider: React.FC<{ children: React.ReactNode }> = ({
+const WebsocketProvider: React.FC<{ children: React.ReactNode }> = ({
   children,
 }) => {
   const [ws, setWS] = useState<WebSocket | null>(null);
@@ -23,6 +23,8 @@ export const WebsocketProvider: React.FC<{ children: React.ReactNode }> = ({
     </React.Fragment>
   );
 };
+
+export default WebsocketProvider;
 
 export const useWebsocket = () => {
   const context = use(WebsocketContext);

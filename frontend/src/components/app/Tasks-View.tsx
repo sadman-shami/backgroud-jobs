@@ -11,7 +11,7 @@ import { Trash } from "lucide-react";
 interface ITask {
   id: string;
   expression: string;
-  result: number;
+  result: string;
   status: "DONE" | "PROCESSING" | "FAILED";
   created_at: string;
 }
