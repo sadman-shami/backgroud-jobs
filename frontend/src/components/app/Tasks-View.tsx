@@ -99,7 +99,6 @@ const TasksView: React.FC = () => {
             new Date(a.created_at).getTime() - new Date(b.created_at).getTime(),
         );
       setDoneTask(dt);
-      console.log(tasks);
       setProcessedTask(pt);
     }
   };
