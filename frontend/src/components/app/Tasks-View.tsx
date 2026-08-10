@@ -86,9 +86,20 @@ const TasksView: React.FC = () => {
       payload.map((item) => {
         tasks.push(JSON.parse(item) as ITask);
       });
-      const pt = tasks.filter((task) => task.status === "PROCESSING");
-      const dt = tasks.filter((task) => task.status !== "PROCESSING");
+      const pt = tasks
+        .filter((task) => task.status === "PROCESSING")
+        .sort(
+          (a, b) =>
+            new Date(b.created_at).getTime() - new Date(a.created_at).getTime(),
+        );
+      const dt = tasks
+        .filter((task) => task.status !== "PROCESSING")
+        .sort(
+          (a, b) =>
+            new Date(a.created_at).getTime() - new Date(b.created_at).getTime(),
+        );
       setDoneTask(dt);
+      console.log(tasks);
       setProcessedTask(pt);
     }
   };

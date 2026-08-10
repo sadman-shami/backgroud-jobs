@@ -5,7 +5,6 @@ from contextlib import asynccontextmanager
 from router import router
 from TaskManager import taskmanager
 
-
 @asynccontextmanager
 async def lifespan(app: FastAPI):
   await taskmanager.start()

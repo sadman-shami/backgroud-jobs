@@ -7,3 +7,5 @@ dependencies = [
     "python-multipart>=0.0.32",
     "websockets>=17.0.1",
 ]
+[tool.fastapi]
+entrypoint = "main:app"
